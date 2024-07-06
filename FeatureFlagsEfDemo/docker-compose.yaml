@@ -1,0 +1,26 @@
+services:
+  db:
+    container_name: local-sql-db
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    platform: "linux/amd64"
+    environment:
+      - MSSQL_SA_PASSWORD=Password123!
+      - ACCEPT_EULA=Y
+    ports:
+      - "1433:1433"
+  
+  efcore-migrations:
+    container_name: efcore-migrations
+    image: mcr.microsoft.com/dotnet/sdk:8.0
+    platform: "linux/amd64"
+    environment:
+      - ConnectionStrings__ApplicationDb=Server=db,1433;Initial Catalog=MyDb;Persist Security Info=False;User ID=sa;Password=Password123!;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=True;Connection Timeout=30;
+      - PATH="$PATH:/root/.dotnet/tools"
+    command: >
+      /bin/bash -c "dotnet tool restore
+      && dotnet ef database update --project src/Lending.PartnerAdminApi.Data/Lending.PartnerAdminApi.Data.csproj --startup-project ./src/Lending.PartnerAdminApi/Lending.PartnerAdminApi.csproj --context AnalyticsDbContext --no-build
+      && dotnet ef database update --project src/Lending.PartnerAdminApi.Data/Lending.PartnerAdminApi.Data.csproj --startup-project ./src/Lending.PartnerAdminApi/Lending.PartnerAdminApi.csproj --context LendingDbContext --no-build"
+    volumes:
+      - ./src:/src
+    depends_on:
+      - db
