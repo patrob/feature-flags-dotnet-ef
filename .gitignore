@@ -133,7 +133,8 @@ dist
 .vscode/
 
 .DS_Store
-.sln.DotSettings*
+*.sln.DotSettings
+*.sln.DotSettings*
 
 obj/
 bin/
