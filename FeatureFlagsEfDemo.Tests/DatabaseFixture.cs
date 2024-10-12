@@ -11,6 +11,7 @@ namespace FeatureFlagsEfDemo.Tests;
 public class DatabaseFixture : IAsyncLifetime
 {
     private readonly MsSqlContainer _container = new MsSqlBuilder()
+        .WithImage("mcr.microsoft.com/mssql/server:2019-CU28-ubuntu-20.04")
         .WithAutoRemove(true)
         .Build();
     
