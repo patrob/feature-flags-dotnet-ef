@@ -14,11 +14,10 @@ public class FeatureFlagsIntegrationTests(CustomWebApplicationFactory factory) :
     {
         using var context = GetScopedContext();
         var expectedFeatureDtos = context.Features
-            .Include(x => x.FeatureDetail)
             .Select(x => new FeatureDto
             {
                 FeatureName = x.Name,
-                IsEnabled = x.FeatureDetail.IsEnabled
+                IsEnabled = x.IsEnabled
             });
         var response = await Client.GetAsync("/Features");
         response.EnsureSuccessStatusCode();
@@ -40,9 +39,8 @@ public class FeatureFlagsIntegrationTests(CustomWebApplicationFactory factory) :
         using var context = GetScopedContext();
         var expectedFeature = context.Features
             .AsNoTracking()
-            .Include(x => x.FeatureDetail)
             .Single(x => x.Name == testFeature);
-        expectedFeature.FeatureDetail.IsEnabled.Should().Be(payload.IsEnabled);
+        expectedFeature.IsEnabled.Should().Be(payload.IsEnabled);
     }
 
     [Fact]
@@ -52,10 +50,9 @@ public class FeatureFlagsIntegrationTests(CustomWebApplicationFactory factory) :
         var testFeature = FeatureEnum.Subtract.ToString();
         using var context = GetScopedContext();
         var feature = context.Features
-            .Include(x => x.FeatureDetail)
             .Single(x => x.Name == testFeature);
         var handler = new FeatureHandler(context);
         var result = await handler.IsEnabledAsync<object?>(testFeature, null);
-        result.Should().Be(feature.FeatureDetail.IsEnabled);
+        result.Should().Be(feature.IsEnabled);
     }
 }

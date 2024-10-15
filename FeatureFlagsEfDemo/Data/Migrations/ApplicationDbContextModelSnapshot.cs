@@ -16,18 +16,21 @@ namespace FeatureFlagsEfDemo.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.6")
+                .HasAnnotation("ProductVersion", "8.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("FeatureFlagsEfDemo.Features.FeatureFlags.FeatureEntity", b =>
+            modelBuilder.Entity("FeatureFlagsEfDemo.Features.FeatureFlags.Entities.FeatureEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsEnabled")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -38,55 +41,21 @@ namespace FeatureFlagsEfDemo.Data.Migrations
                     b.HasIndex("Name")
                         .IsUnique();
 
-                    b.ToTable("Feature", (string)null);
+                    b.ToTable("Feature");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
+                            IsEnabled = false,
                             Name = "Subtract"
                         },
                         new
                         {
                             Id = 2,
+                            IsEnabled = false,
                             Name = "HandleDivideByZeroRequests"
                         });
-                });
-
-            modelBuilder.Entity("FeatureFlagsEfDemo.Features.FeatureFlags.FeatureEntity", b =>
-                {
-                    b.OwnsOne("FeatureFlagsEfDemo.Features.FeatureFlags.FeatureEntity.FeatureDetail#FeatureFlagsEfDemo.Features.FeatureFlags.FeatureDetailEntity", "FeatureDetail", b1 =>
-                        {
-                            b1.Property<int>("Id")
-                                .HasColumnType("int");
-
-                            b1.Property<bool>("IsEnabled")
-                                .HasColumnType("bit");
-
-                            b1.HasKey("Id");
-
-                            b1.ToTable("FeatureDetail", (string)null);
-
-                            b1.WithOwner("Feature")
-                                .HasForeignKey("Id");
-
-                            b1.Navigation("Feature");
-
-                            b1.HasData(
-                                new
-                                {
-                                    Id = 1,
-                                    IsEnabled = false
-                                },
-                                new
-                                {
-                                    Id = 2,
-                                    IsEnabled = false
-                                });
-                        });
-
-                    b.Navigation("FeatureDetail")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -1,5 +1,4 @@
 using FeatureFlagsEfDemo.Data;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.FeatureManagement;
 
 namespace FeatureFlagsEfDemo.Features.FeatureFlags;
@@ -24,17 +23,15 @@ public class FeatureHandler(IApplicationDbContext context) : IFeatureHandler
     public bool IsEnabled(FeatureEnum feature)
     {
         var featureModel = context.Features
-            .Include(x => x.FeatureDetail)
             .Single(x => x.Name == feature.ToString());
-        return featureModel.FeatureDetail.IsEnabled;
+        return featureModel.IsEnabled;
     }
 
     public void SetIsEnabled(FeatureEnum feature, bool isEnabled)
     {
         var featureModel = context.Features
-            .Include(x => x.FeatureDetail)
             .Single(x => x.Name == feature.ToString());
-        featureModel.FeatureDetail.IsEnabled = isEnabled;
+        featureModel.IsEnabled = isEnabled;
         context.SaveChanges();
     }
 
@@ -52,11 +49,10 @@ public class FeatureHandler(IApplicationDbContext context) : IFeatureHandler
     public IEnumerable<FeatureDto> GetFeatures()
     {
         return context.Features
-            .Include(x => x.FeatureDetail)
             .Select(x => new FeatureDto
             {
                 FeatureName = x.Name,
-                IsEnabled = x.FeatureDetail.IsEnabled
+                IsEnabled = x.IsEnabled
             });
     }
 }

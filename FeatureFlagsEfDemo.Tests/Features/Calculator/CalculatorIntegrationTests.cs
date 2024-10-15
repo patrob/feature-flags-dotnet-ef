@@ -40,9 +40,8 @@ public class CalculatorIntegrationTests(CustomWebApplicationFactory factory) : B
     {
         using var context = GetScopedContext();
         var feature = context.Features
-            .Include(f => f.FeatureDetail)
             .Single(x => x.Name == FeatureEnum.Subtract.ToString());
-        feature.FeatureDetail.IsEnabled = true;
+        feature.IsEnabled = true;
         await context.SaveChangesAsync();
 
         const string url = "/Calculator/Subtract?numbers=10&numbers=5";
@@ -56,9 +55,8 @@ public class CalculatorIntegrationTests(CustomWebApplicationFactory factory) : B
     {
         using var context = GetScopedContext();
         var feature = context.Features
-            .Include(f => f.FeatureDetail)
             .Single(x => x.Name == FeatureEnum.Subtract.ToString());
-        feature.FeatureDetail.IsEnabled = false;
+        feature.IsEnabled = false;
         await context.SaveChangesAsync();
         
         const string url = "/Calculator/Subtract?numbers=10&numbers=5";

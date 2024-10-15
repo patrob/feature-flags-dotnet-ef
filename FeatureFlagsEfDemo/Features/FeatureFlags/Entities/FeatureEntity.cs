@@ -15,16 +15,12 @@ public record FeatureEntity : IEntityTypeConfiguration<FeatureEntity>
     [Required]
     public required string Name { get; set; }
     
-    public virtual FeatureDetailEntity FeatureDetail { get; set; } = null!;
+    public bool IsEnabled { get; set; }
 
     public void Configure(EntityTypeBuilder<FeatureEntity> entityBuilder)
     {
         entityBuilder
             .HasData(Enum.GetValues<FeatureEnum>()
                 .Select(e => new FeatureEntity { Id = (int)e, Name = e.ToString() }));
-        entityBuilder
-            .OwnsOne(e => e.FeatureDetail)
-            .HasData(Enum.GetValues<FeatureEnum>()
-                .Select(e => new FeatureDetailEntity { Id = (int)e }));
     }
 }
