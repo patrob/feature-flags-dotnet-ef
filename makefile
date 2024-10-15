@@ -12,6 +12,12 @@ down:
 reset:
 	make down && make up
 
+setup_local:
+	make up && sleep 5 && make run_migrations_local
+
+restart_local:
+	make reset && sleep 5 && make run_migrations_local
+
 format:
 	dotnet format
 
